@@ -2,11 +2,6 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP, AES
 import socket
 import time
-import os
-
-receiver_ip = os.getenv("RECEIVER_IP", "127.0.0.1")
-port = int(os.getenv("PORT", 8080))
-chunk_size = int(os.getenv("CHUNK_SIZE", 4096))
 
 
 def print_progress_bar(iteration, total, prefix='', suffix='', decimals=1, length=50, fill='█'):
@@ -35,7 +30,7 @@ def generate_rsa_keys():
 private_key, public_key = generate_rsa_keys()
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((receiver_ip, port))
+server.bind(("0.0.0.0", 8080))
 server.listen(1)
 print("Listening for connections...")
 
@@ -68,7 +63,7 @@ print_progress_bar(total_size_received, encrypted_data_size,
 
 start_time = time.time()
 while len(received_data) < encrypted_data_size:
-    chunk = client.recv(chunk_size)
+    chunk = client.recv(4096)
     if not chunk:
         break
     received_data.extend(chunk)

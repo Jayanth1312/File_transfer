@@ -2,13 +2,8 @@ import socket
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP, AES
 from Crypto.Random import get_random_bytes
-import time
 import os
-
-receiver_ip = os.getenv("RECEIVER_IP", "127.0.0.1")
-port = int(os.getenv("PORT", 8080))
-aes_key_size = int(os.getenv("AES_KEY_SIZE", 16))
-chunk_size = int(os.getenv("CHUNK_SIZE", 4096))
+import time
 
 
 def print_progress_bar(iteration, total, prefix='', suffix='', decimals=1, length=50, fill='█'):
@@ -28,12 +23,12 @@ def encrypt_with_public_key(message, public_key):
 
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((receiver_ip, 8080))
+client.connect((input("Enter the receiver IP: "), 8080))
 
 public_key = client.recv(2048)
-print(f"Connected to {receiver_ip}")
+print("Public key received.")
 
-aes_key = get_random_bytes(aes_key_size)
+aes_key = get_random_bytes(16)
 iv = get_random_bytes(16)
 
 encrypted_aes_key_iv = encrypt_with_public_key(aes_key + iv, public_key)
