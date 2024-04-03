@@ -1,0 +1,5 @@
+@echo off
+set RECEIVER_IP=127.0.0.1
+set PORT=8080
+set AES_KEY_SIZE=16
+set CHUNK_SIZE=4096
