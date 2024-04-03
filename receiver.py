@@ -61,6 +61,7 @@ total_size_received = 0
 print_progress_bar(total_size_received, encrypted_data_size,
                    prefix='Progress:', suffix='Complete', length=50)
 
+start_time = time.time()
 while len(received_data) < encrypted_data_size:
     chunk = client.recv(4096)
     if not chunk:
@@ -70,16 +71,13 @@ while len(received_data) < encrypted_data_size:
     print_progress_bar(total_size_received, encrypted_data_size,
                        prefix='Progress:', suffix='Complete', length=50)
 
-start_time = time.time()
 
 data = AES.new(aes_key, AES.MODE_EAX, iv).decrypt(received_data)
 
-end_time = time.time()
-print(f"Decryption Time: {end_time - start_time} seconds")
-
 with open(file_name, "wb") as file:
     file.write(data)
-
+end_time = time.time()
 print(f"File '{file_name}' has been received and decrypted.")
+print(f"Time taken: {end_time - start_time:.2f} seconds.")
 client.close()
 server.close()

@@ -40,12 +40,10 @@ file_name = os.path.basename(file_path)
 with open(file_path, "rb") as file:
     data = file.read()
 
-start_time = time.time()
 cipher_aes = AES.new(aes_key, AES.MODE_EAX, iv)
 encrypted_data = cipher_aes.encrypt(data)
-end_time = time.time()
-print(f"Encryption took {end_time - start_time} seconds.")
 
+start_time = time.time()
 client.send(len(file_name).to_bytes(2, 'big'))
 client.send(file_name.encode())
 client.send(len(encrypted_data).to_bytes(4, 'big'))
@@ -62,5 +60,7 @@ for i in range(0, len(encrypted_data), chunk_size):
     print_progress_bar(min(total_size_sent, len(encrypted_data)), len(
         encrypted_data), prefix='Progress:', suffix='Complete', length=50)
 
+end_time = time.time()
 print(f"\nFile '{file_name}' sent successfully.")
+print(f"Time taken: {end_time - start_time:.2f} seconds.")
 client.close()
